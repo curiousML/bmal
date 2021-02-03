@@ -1,0 +1,6 @@
+context_path: bamal.run.ProjectContext
+project_name: "bamal"
+project_version: "0.16.6"
+package_name: "bamal"
+hooks:
+  - bamal.hooks.project_hooks

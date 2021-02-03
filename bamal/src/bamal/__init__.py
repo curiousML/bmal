@@ -25,35 +25,7 @@
 #
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
+"""bamal
 """
-This module contains an example test.
 
-Tests should be placed in ``src/tests``, in modules that mirror your
-project's structure, and in files named test_*.py. They are simply functions
-named ``test_*`` which test a unit of logic.
-
-To run the tests, run ``kedro test``.
-"""
-from pathlib import Path
-
-import pytest
-
-from bmal.run import ProjectContext
-
-
-@pytest.fixture
-def project_context(mocker):
-    # Don't configure the logging module. If it's configured, tests that
-    # check logs using the ``caplog`` fixture depend on execution order.
-    mocker.patch.object(ProjectContext, "_setup_logging")
-
-    return ProjectContext(str(Path.cwd()))
-
-
-class TestProjectContext:
-    def test_project_name(self, project_context):
-        assert project_context.project_name == "BMAL"
-
-    def test_project_version(self, project_context):
-        assert project_context.project_version == "0.16.6"
+__version__ = "0.1"

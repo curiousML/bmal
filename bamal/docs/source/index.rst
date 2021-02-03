@@ -1,8 +1,8 @@
-.. bmal documentation master file, created by sphinx-quickstart.
+.. bamal documentation master file, created by sphinx-quickstart.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to project bmal's API docs!
+Welcome to project bamal's API docs!
 =============================================
 
 .. toctree::

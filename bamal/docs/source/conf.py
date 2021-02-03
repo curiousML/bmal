@@ -29,7 +29,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# bmal documentation build
+# bamal documentation build
 # configuration file, created by sphinx-quickstart.
 #
 # This file is execfile()d with the current directory set to its
@@ -50,11 +50,11 @@ import re
 from kedro.framework.cli.utils import find_stylesheets
 from recommonmark.transform import AutoStructify
 
-from bmal import __version__ as release
+from bamal import __version__ as release
 
 # -- Project information -----------------------------------------------------
 
-project = "bmal"
+project = "bamal"
 copyright = "2020, QuantumBlack Visual Analytics Limited"
 author = "QuantumBlack"
 
@@ -149,7 +149,7 @@ html_show_sourcelink = False
 # -- Options for HTMLHelp output ---------------------------------------------
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = "bmaldoc"
+htmlhelp_basename = "bamaldoc"
 
 # -- Options for LaTeX output ------------------------------------------------
 
@@ -177,8 +177,8 @@ latex_elements = {
 latex_documents = [
     (
         master_doc,
-        "bmal.tex",
-        "bmal Documentation",
+        "bamal.tex",
+        "bamal Documentation",
         "QuantumBlack",
         "manual",
     )
@@ -191,8 +191,8 @@ latex_documents = [
 man_pages = [
     (
         master_doc,
-        "bmal",
-        "bmal Documentation",
+        "bamal",
+        "bamal Documentation",
         [author],
         1,
     )
@@ -206,11 +206,11 @@ man_pages = [
 texinfo_documents = [
     (
         master_doc,
-        "bmal",
-        "bmal Documentation",
+        "bamal",
+        "bamal Documentation",
         author,
-        "bmal",
-        "Project bmal codebase.",
+        "bamal",
+        "Project bamal codebase.",
         "Data-Science",
     )
 ]
