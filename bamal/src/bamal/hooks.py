@@ -54,7 +54,7 @@ class ProjectHooks:
         return {
             "reporting": reporting_pipeline,
             "sampling": sampling_pipeline,
-            "__default__": sampling_pipeline,
+            "__default__": sampling_pipeline + reporting_pipeline,
         }
 
     @hook_impl

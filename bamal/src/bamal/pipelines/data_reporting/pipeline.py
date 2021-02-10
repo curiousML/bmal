@@ -34,12 +34,35 @@ Delete this when you start working on your own Kedro project.
 
 from kedro.pipeline import Pipeline, node
 
-from .nodes import predict, report_accuracy, train_model
+from .nodes import plot_line_line, plot_line_box
 
 
 def create_pipeline(**kwargs):
     return Pipeline(
         [
+            #node(
+            #    func=plot_line_line,
+            #    inputs=dict(
+            #        pl_perf="pl_perf",
+            #        al_perfs="al_perfs",
+            #        bs="params:BATCH_SEQ",
+            #        budget="params:BUDGET"
+            #        ),
+            #    outputs="line_line",
+            #    tags=["reporting"]
+            #),
+            node(
+                func=plot_line_box,
+                inputs=dict(
+                    pl_perf="pl_perf",
+                    al_perfs="al_perfs",
+                    bs="params:BATCH_SEQ",
+                    budget="params:BUDGET",
+                    b_analysis="params:BATCH_SIZE"
+                    ),
+                outputs="line_blox",
+                tags=["reporting"]
+            ),
             #node(
             #    train_model,
             #    ["example_train_x", "example_train_y", "parameters"],
