@@ -1,6 +1,7 @@
 from sklearn.linear_model import LogisticRegression
 from scipy.spatial.distance import pdist, squareform
 from sklearn.metrics import roc_auc_score, f1_score
+import numpy as np
 
 class PassiveLearning:
     def __init__(self, X_train_full, y_train_full, full_id, train_id, pool_id, b):

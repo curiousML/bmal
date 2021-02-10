@@ -49,8 +49,8 @@ def split_train_pool(y_train_full, n_init = 200):
     init_selection  =  np.random.choice(size, n_init, replace=False)
     train_id        =  init_selection
     pool_id         =  np.delete(full_id, init_selection)
-    logging.info("train_id lengths : " + str(len(train_id)))
-    logging.info("pool_id lengths : " + str(len(pool_id)))
+    #logging.info("train_id lengths : " + str(len(train_id)))
+    #logging.info("pool_id lengths : " + str(len(pool_id)))
     return full_id, train_id, pool_id
 
 def truncate_dataset(X_train_full, y_train_full, size = 10000):
@@ -68,7 +68,7 @@ def al_performances(bs, budget, n_simu, X_train_full, y_train_full, X_test, y_te
         perfs_dict[b] = []
         for s in range(n_simu):
             if s%5 == 0:
-                logging.info(f"b : {b}, s : {s}")
+                logging.info(f"active learning, b : {b}, s : {s}")
             # refaire le sampling si pas de représentation de toutes les classes
             full_id, train_id, pool_id = split_train_pool(y_train_full, n_init = b)
             #while np.len(np.unique(y_train_full[train_id]))
@@ -77,8 +77,12 @@ def al_performances(bs, budget, n_simu, X_train_full, y_train_full, X_test, y_te
     return perfs_dict
 
 
-def pl_performances(bs):
-
-
-
-    return None
+def pl_performances(bs, budget, n_simu, X_train_full, y_train_full, X_test, y_test):
+    perfs = []
+    for s in range(n_simu):
+        if s%5 == 0:
+            logging.info(f"passive learning, b : {bs[0]}, s : {s}")
+        full_id, train_id, pool_id = split_train_pool(y_train_full, n_init = bs[0])
+        pl = PassiveLearning(X_train_full, y_train_full, full_id, train_id, pool_id, bs[0])
+        perfs.append(pl.run(X_test, y_test, budget//bs[0]))
+    return perfs

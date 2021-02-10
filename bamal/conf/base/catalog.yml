@@ -78,6 +78,6 @@ al_perfs:
   type: pickle.PickleDataSet
   filepath: data/02_intermediate/al_perfs.pkl
 
-#pl_perfs:
-#  type: pickle.PickleDataSet
-#  filepath: data/02_intermediate/pl_perfs.pkl
+pl_perf:
+  type: pickle.PickleDataSet
+  filepath: data/02_intermediate/pl_perf.pkl

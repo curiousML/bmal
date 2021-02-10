@@ -34,7 +34,7 @@ Delete this when you start working on your own Kedro project.
 
 from kedro.pipeline import Pipeline, node
 
-from .nodes import truncate_dataset, split_train_pool, compute_gaussian_kernel, al_performances
+from .nodes import truncate_dataset, split_train_pool, compute_gaussian_kernel, al_performances, pl_performances
 
 
 def create_pipeline(**kwargs):
@@ -80,6 +80,20 @@ def create_pipeline(**kwargs):
                     K_FIXE="K_FIXE"
                     ),
                 outputs="al_perfs",
+                tags=["sampling"]
+            ),
+            node(
+                func=pl_performances,
+                inputs=dict(
+                    bs="params:BATCH_SEQ",
+                    budget="params:BUDGET",
+                    n_simu="params:N_SIMULATIONS",
+                    X_train_full="X_train_trunc",
+                    y_train_full="y_train_trunc",
+                    X_test="X_test",
+                    y_test="y_test"
+                    ),
+                outputs="pl_perf",
                 tags=["sampling"]
             ),
         ]
