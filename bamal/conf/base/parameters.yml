@@ -5,4 +5,5 @@
 # Documentation for this file format can be found in "Parameters"
 # Link: https://kedro.readthedocs.io/en/stable/04_kedro_project_setup/02_configuration.html#parameters
 
-batch_size: 20 # b = 20
+BATCH_SIZE: 20 # b = 20
+N_INIT: 200
