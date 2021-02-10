@@ -41,14 +41,12 @@ def create_pipeline(**kwargs):
     return Pipeline(
         [
             node(
-                split_data,
-                ["example_iris_data", "params:example_test_data_ratio"],
-                dict(
-                    train_x="example_train_x",
-                    train_y="example_train_y",
-                    test_x="example_test_x",
-                    test_y="example_test_y",
+                func=split_train_pool,
+                inputs=dict(
+                    y_train_full="y_train_full"
+                    ),
+                outputs=["full_id", "train_id", "pool_id"],
+                tags=["sampling"]
                 ),
-            )
         ]
     )

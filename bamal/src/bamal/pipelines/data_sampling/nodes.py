@@ -36,13 +36,16 @@ from typing import Any, Dict
 import pandas as pd
 
 
-def split_train_pool():
+def split_train_pool(y_train_full):
+    """
+    returns only pool, train and full ids
+    """
     size            =  len(y_train_full)
     full_id         =  np.arange(size)
     init_selection  =  np.random.choice(size, n_init, replace=False)
     train_id        =  init_selection
     pool_id         =  np.delete(full_id, init_selection)
-    return None
+    return full_id, train_id, pool_id
 
 def split_data(data: pd.DataFrame, example_test_data_ratio: float) -> Dict[str, Any]:
     """Node for splitting the classical Iris data set into training and test
