@@ -5,5 +5,11 @@
 # Documentation for this file format can be found in "Parameters"
 # Link: https://kedro.readthedocs.io/en/stable/04_kedro_project_setup/02_configuration.html#parameters
 
-BATCH_SIZE: 20 # b = 20
 N_INIT: 200
+SIZE_ANALYSIS: 5000
+BATCH_SIZE: 20 # b = 20
+
+BUDGET: 400
+N_SIMULATIONS: 10
+BATCH_SEQ: [40, 80, 100, 200]
+#[5, 10, 20, 40, 80, 100, 120, 140, 160, 180, 200]

@@ -43,6 +43,7 @@
 # This is a data set used by the "Hello World" example pipeline provided with the project
 # template. Please feel free to remove it once you remove the example pipeline.
 
+# raw datasets
 X_train_full:
   type: pickle.PickleDataSet
   filepath: data/01_raw/X_train_full.pkl
@@ -59,3 +60,24 @@ y_test:
   type: pickle.PickleDataSet
   filepath: data/01_raw/y_test.pkl
 
+
+# intermediate dataset and results
+X_train_trunc:
+  type: pickle.PickleDataSet
+  filepath: data/02_intermediate/X_train_trunc.pkl
+
+y_train_trunc:
+  type: pickle.PickleDataSet
+  filepath: data/02_intermediate/y_train_trunc.pkl
+
+K_FIXE:
+  type: pickle.PickleDataSet
+  filepath: data/02_intermediate/k_fixe.pkl
+
+al_perfs:
+  type: pickle.PickleDataSet
+  filepath: data/02_intermediate/al_perfs.pkl
+
+#pl_perfs:
+#  type: pickle.PickleDataSet
+#  filepath: data/02_intermediate/pl_perfs.pkl

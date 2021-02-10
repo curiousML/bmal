@@ -34,20 +34,53 @@ Delete this when you start working on your own Kedro project.
 
 from kedro.pipeline import Pipeline, node
 
-from .nodes import split_train_pool
+from .nodes import truncate_dataset, split_train_pool, compute_gaussian_kernel, al_performances
 
 
 def create_pipeline(**kwargs):
     return Pipeline(
         [
+            #node(
+            #    func=split_train_pool,
+            #    inputs=dict(
+            #        y_train_full="y_train_full",
+            #        n_init="params:N_INIT"
+            #        ),
+            #    outputs=["full_id", "train_id", "pool_id"],
+            #    tags=["sampling"]
+            #),
             node(
-                func=split_train_pool,
+                func=truncate_dataset,
                 inputs=dict(
+                    X_train_full="X_train_full",
                     y_train_full="y_train_full",
-                    n_init="params:N_INIT"
+                    size="params:SIZE_ANALYSIS"
                     ),
-                outputs=["full_id", "train_id", "pool_id"],
+                outputs=["X_train_trunc", "y_train_trunc"],
+                tags=["truncate"]
+            ),
+            node(
+                func=compute_gaussian_kernel,
+                inputs=dict(
+                    X="X_train_trunc"
+                    ),
+                outputs="K_FIXE",
+                tags=["pre_sampling"]
+            ),
+            node(
+                func=al_performances,
+                inputs=dict(
+                    bs="params:BATCH_SEQ",
+                    budget="params:BUDGET",
+                    n_simu="params:N_SIMULATIONS",
+                    X_train_full="X_train_trunc",
+                    y_train_full="y_train_trunc",
+                    X_test="X_test",
+                    y_test="y_test",
+                    K_FIXE="K_FIXE"
+                    ),
+                outputs="al_perfs",
                 tags=["sampling"]
-                ),
+            ),
         ]
     )
