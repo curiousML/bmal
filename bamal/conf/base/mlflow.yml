@@ -1,0 +1,16 @@
+# EXPERIMENT-RELATED PARAMTERS ------
+
+experiment:
+  name: batch_mode_al
+  create: True
+
+# RUN-RELATED PARAMTERS ------
+run:
+  id: null
+  name: null
+  nested: True
+
+# UI-RELATED PARAMTERS ------
+ui: 
+  port: null
+  host: null
