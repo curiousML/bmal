@@ -43,23 +43,19 @@
 # This is a data set used by the "Hello World" example pipeline provided with the project
 # template. Please feel free to remove it once you remove the example pipeline.
 
-example_iris_data:
-  type: pandas.CSVDataSet
-  filepath: data/01_raw/iris.csv
-
 X_train_full:
-  type: PickleLocalDataSet
-  filpath: data/02_intermediate/X_train_full.pkl
+  type: pickle.PickleDataSet
+  filepath: data/01_raw/X_train_full.pkl
 
 y_train_full:
-  type: PickleLocalDataSet
-  filpath: data/02_intermediate/y_train_full.pkl
+  type: pickle.PickleDataSet
+  filepath: data/01_raw/y_train_full.pkl
 
 X_test:
-  type: PickleLocalDataSet
-  filpath: data/02_intermediate/X_test.pkl
+  type: pickle.PickleDataSet
+  filepath: data/01_raw/X_test.pkl
 
 y_test:
-  type: PickleLocalDataSet
-  filpath: data/02_intermediate/y_test.pkl
+  type: pickle.PickleDataSet
+  filepath: data/01_raw/y_test.pkl
 
