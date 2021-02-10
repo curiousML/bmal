@@ -32,11 +32,12 @@ PLEASE DELETE THIS FILE ONCE YOU START WORKING ON YOUR OWN PROJECT!
 """
 
 from typing import Any, Dict
-
+import logging 
 import pandas as pd
+import numpy as np
 
 
-def split_train_pool(y_train_full):
+def split_train_pool(y_train_full, n_init = 200):
     """
     returns only pool, train and full ids
     """
@@ -45,7 +46,10 @@ def split_train_pool(y_train_full):
     init_selection  =  np.random.choice(size, n_init, replace=False)
     train_id        =  init_selection
     pool_id         =  np.delete(full_id, init_selection)
+    logging.info("train_id lengths : " + str(len(train_id)))
+    logging.info("pool_id lengths : " + str(len(pool_id)))
     return full_id, train_id, pool_id
+
 
 def split_data(data: pd.DataFrame, example_test_data_ratio: float) -> Dict[str, Any]:
     """Node for splitting the classical Iris data set into training and test

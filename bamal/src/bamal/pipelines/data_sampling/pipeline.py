@@ -43,7 +43,8 @@ def create_pipeline(**kwargs):
             node(
                 func=split_train_pool,
                 inputs=dict(
-                    y_train_full="y_train_full"
+                    y_train_full="y_train_full",
+                    n_init="params:N_INIT"
                     ),
                 outputs=["full_id", "train_id", "pool_id"],
                 tags=["sampling"]
