@@ -78,11 +78,15 @@ def al_performances(bs, budget, n_simu, X_train_full, y_train_full, X_test, y_te
 
 
 def pl_performances(bs, budget, n_simu, X_train_full, y_train_full, X_test, y_test):
-    perfs = []
-    for s in range(n_simu):
-        if s%5 == 0:
-            logging.info(f"passive learning, b : {bs[0]}, s : {s}")
-        full_id, train_id, pool_id = split_train_pool(y_train_full, n_init = bs[0])
-        pl = PassiveLearning(X_train_full, y_train_full, full_id, train_id, pool_id, bs[0])
-        perfs.append(pl.run(X_test, y_test, budget//bs[0]))
-    return perfs
+    perfs_dict = dict()
+    for b in bs:
+        perfs_dict[b] = []
+        for s in range(n_simu):
+            if s%5 == 0:
+                logging.info(f"passive learning, b : {b}, s : {s}")
+            # refaire le sampling si pas de représentation de toutes les classes
+            full_id, train_id, pool_id = split_train_pool(y_train_full, n_init = b)
+            #while np.len(np.unique(y_train_full[train_id]))
+            pl = PassiveLearning(X_train_full, y_train_full, full_id, train_id, pool_id, b)
+            perfs_dict[b].append(pl.run(X_test, y_test, budget//b))
+    return perfs_dict

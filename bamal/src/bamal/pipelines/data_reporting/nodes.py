@@ -40,29 +40,38 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
+from kedro.extras.datasets.matplotlib import MatplotlibWriter
+from kedro_mlflow.io.artifacts import MlflowArtifactDataSet
 
 
-def plot_line_line(pl_perf, al_perfs, bs, budget):
+def plot_line_line(pl_perfs, al_perfs, bs, budget):
     pl_x = np.arange(bs[0], budget+bs[0], bs[0])
-    pl_y = np.array(pl_perf).mean(axis = 0)[:len(pl_x)]
+    pl_y = np.array(pl_perfs[bs[0]]).mean(axis = 0)[:len(pl_x)]
     plt.plot(pl_x, pl_y, label = "passive learning", marker = 'o')
     for b in bs:
         x = np.arange(b, budget+b, b)
         perf_mean = np.array(al_perfs[b]).mean(axis = 0)[:len(x)]
-        img = plt.plot(x, perf_mean, label = "active learning " + str(b), marker = '+')
+        plt.plot(x, perf_mean, label = "active learning " + str(b), marker = '+')
     plt.legend()
-    #plt.show()
+    img = plt.gcf()
+    #MlflowArtifactDataSet(img).save(filepath= "data/08_reporting/plot_line_line.png")
+    #img.savefig('data/08_reporting/line_line.png')
+    plt.close("all")
+    plot_writer = MatplotlibWriter(
+        filepath="data/08_reporting/line_line.png"
+    )
+    plot_writer.save(img)
     return None
 
-def plot_line_box(pl_perf, al_perfs, bs, budget, b_analysis):
+def plot_line_box(pl_perfs, al_perfs, budget, b_analysis):
     x = np.arange(0, budget+b_analysis, b_analysis)+b_analysis
     perfs = pd.DataFrame({
         i:perf for i, perf in enumerate(al_perfs[b_analysis])
     }, index = x).transpose()
     perfs = perfs.iloc[:,:-1]
     
-    pl_x = np.arange(bs[0], budget+bs[0], bs[0])
-    pl_y = np.array(pl_perf).mean(axis = 0)[:len(pl_x)]
+    pl_x = np.arange(b_analysis, budget+b_analysis, b_analysis)
+    pl_y = np.array(pl_perfs[b_analysis]).mean(axis = 0)[:len(pl_x)]
     g1 = sns.boxplot(data = perfs, showfliers=False, color="orange")
     plt.plot(pl_x.astype(str), pl_y, label = "passive learning", marker = 'o')
     g1.set(xticklabels=[])
@@ -70,5 +79,41 @@ def plot_line_box(pl_perf, al_perfs, bs, budget, b_analysis):
     g1.set(xlabel=f"B (0 à {budget})")
     g1.set(title=f"b = {b_analysis}")
     g1.legend()
-    plt.show()
+    img = plt.gcf()
+    #MlflowArtifactDataSet(img).save(filepath= "data/08_reporting/plot_line_box.png")
+    #img.savefig('data/08_reporting/line_box.png')
+    plt.close("all")
+    plot_writer = MatplotlibWriter(
+        filepath=f"data/08_reporting/line_box_{b_analysis}.png"
+    )
+    plot_writer.save(img)
+    return None
+
+def plot_multiple_line_box(pl_perfs, al_perfs, bs, budget):
+    plots_dict = dict()
+    for b in bs:
+        plots_dict[b] = plot_line_box(pl_perfs, al_perfs, bs, budget, b)
+        plt.close()
+    #img.savefig('data/08_reporting/multi_line_box.png')
+    plot_writer = MatplotlibWriter(
+        filepath="data/08_reporting/multi_line_box"
+    )
+    plot_writer.save(plots_dict)
+    return None
+
+def plot_batch_line_line(Bs, bs, perfs_dict):
+    for B in Bs:
+        perfs = [np.array(perfs_dict[b]).mean(axis = 0)[B//b] for b in bs]
+        plt.plot(np.array(bs).astype(str), perfs, marker = 'o', label = f"Budget : {B}")
+    plt.xlabel("b")
+    plt.ylabel("perf")
+    plt.legend()
+    img = plt.gcf()
+    #MlflowArtifactDataSet(img).save(filepath= "data/08_reporting/plot_line_box.png")
+    #img.savefig('data/08_reporting/line_box.png')
+    plt.close("all")
+    plot_writer = MatplotlibWriter(
+        filepath=f"data/08_reporting/batch_line_line.png"
+    )
+    plot_writer.save(img)
     return None

@@ -34,45 +34,54 @@ Delete this when you start working on your own Kedro project.
 
 from kedro.pipeline import Pipeline, node
 
-from .nodes import plot_line_line, plot_line_box
+from .nodes import plot_line_line, plot_line_box, plot_multiple_line_box, plot_batch_line_line
 
 
 def create_pipeline(**kwargs):
     return Pipeline(
         [
+            node(
+                func=plot_line_line,
+                inputs=dict(
+                    pl_perfs="pl_perfs",
+                    al_perfs="al_perfs",
+                    bs="params:BATCH_SEQ",
+                    budget="params:BUDGET"
+                    ),
+                outputs=None,
+                tags=["reporting"]
+            ),
+            node(
+                func=plot_line_box,
+                inputs=dict(
+                    pl_perfs="pl_perfs",
+                    al_perfs="al_perfs",
+                    budget="params:BUDGET",
+                    b_analysis="params:BATCH_SIZE"
+                    ),
+                outputs=None,
+                tags=["reporting"]
+            ),
+            node(
+                func=plot_batch_line_line,
+                inputs=dict(
+                    Bs="params:BUDGET_SEQ",
+                    bs="params:BATCH_SEQ",
+                    perfs_dict="al_perfs"
+                    ),
+                outputs=None,
+                tags=["reporting"]
+            ),
             #node(
-            #    func=plot_line_line,
+            #    func=plot_multiple_line_box,
             #    inputs=dict(
-            #        pl_perf="pl_perf",
+            #        pl_perfs="pl_perfs",
             #        al_perfs="al_perfs",
             #        bs="params:BATCH_SEQ",
             #        budget="params:BUDGET"
             #        ),
-            #    outputs="line_line",
+            #    outputs=None,
             #    tags=["reporting"]
             #),
-            node(
-                func=plot_line_box,
-                inputs=dict(
-                    pl_perf="pl_perf",
-                    al_perfs="al_perfs",
-                    bs="params:BATCH_SEQ",
-                    budget="params:BUDGET",
-                    b_analysis="params:BATCH_SIZE"
-                    ),
-                outputs="line_blox",
-                tags=["reporting"]
-            ),
-            #node(
-            #    train_model,
-            #    ["example_train_x", "example_train_y", "parameters"],
-            #    "example_model",
-            #),
-            #node(
-            #    predict,
-            #    dict(model="example_model", test_x="example_test_x"),
-            #    "example_predictions",
-            #),
-            #node(report_accuracy, ["example_predictions", "example_test_y"], None),
         ]
     )

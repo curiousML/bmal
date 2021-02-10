@@ -78,6 +78,23 @@ al_perfs:
   type: pickle.PickleDataSet
   filepath: data/02_intermediate/al_perfs.pkl
 
-pl_perf:
+pl_perfs:
   type: pickle.PickleDataSet
-  filepath: data/02_intermediate/pl_perf.pkl
+  filepath: data/02_intermediate/pl_perfs.pkl
+
+# reporting
+#line_box:
+#  type: kedro_mlflow.io.artifacts.MlflowArtifactDataSet
+#  data_set:
+#    type: matplotlib.MatplotlibWriter  # or any valid kedro DataSet
+#    filepath: data/08_reporting/line_box.png
+#    save_args:
+#      bbox_inches: 'tight'
+#
+#line_line:
+#  type: kedro_mlflow.io.artifacts.MlflowArtifactDataSet
+#  data_set:
+#    type: matplotlib.MatplotlibWriter  # or any valid kedro DataSet
+#    filepath: data/08_reporting/line_line.png
+#    save_args:
+#      bbox_inches: 'tight'

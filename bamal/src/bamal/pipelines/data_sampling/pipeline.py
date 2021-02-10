@@ -57,7 +57,7 @@ def create_pipeline(**kwargs):
                     size="params:SIZE_ANALYSIS"
                     ),
                 outputs=["X_train_trunc", "y_train_trunc"],
-                tags=["truncate"]
+                tags=["sampling", "truncate"]
             ),
             node(
                 func=compute_gaussian_kernel,
@@ -65,7 +65,7 @@ def create_pipeline(**kwargs):
                     X="X_train_trunc"
                     ),
                 outputs="K_FIXE",
-                tags=["pre_sampling"]
+                tags=["sampling", "pre_active_sampling"]
             ),
             node(
                 func=al_performances,
@@ -80,7 +80,7 @@ def create_pipeline(**kwargs):
                     K_FIXE="K_FIXE"
                     ),
                 outputs="al_perfs",
-                tags=["sampling"]
+                tags=["sampling", "active_sampling"]
             ),
             node(
                 func=pl_performances,
@@ -93,8 +93,8 @@ def create_pipeline(**kwargs):
                     X_test="X_test",
                     y_test="y_test"
                     ),
-                outputs="pl_perf",
-                tags=["sampling"]
+                outputs="pl_perfs",
+                tags=["sampling", "passive_sampling"]
             ),
         ]
     )
