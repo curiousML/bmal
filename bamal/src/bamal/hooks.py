@@ -35,8 +35,8 @@ from kedro.io import DataCatalog
 from kedro.pipeline import Pipeline
 from kedro.versioning import Journal
 
-from bamal.pipelines import data_engineering as de
-from bamal.pipelines import data_science as ds
+from bamal.pipelines import data_reporting as dr
+from bamal.pipelines import data_sampling as ds
 
 
 class ProjectHooks:
@@ -48,13 +48,13 @@ class ProjectHooks:
             A mapping from a pipeline name to a ``Pipeline`` object.
 
         """
-        data_engineering_pipeline = de.create_pipeline()
-        data_science_pipeline = ds.create_pipeline()
+        reporting_pipeline = dr.create_pipeline()
+        sampling_pipeline = ds.create_pipeline()
 
         return {
-            "de": data_engineering_pipeline,
-            "ds": data_science_pipeline,
-            "__default__": data_engineering_pipeline + data_science_pipeline,
+            "reporting": reporting_pipeline,
+            "sampling": sampling_pipeline,
+            "__default__": sampling_pipeline,
         }
 
     @hook_impl
