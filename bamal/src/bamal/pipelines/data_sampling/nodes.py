@@ -90,3 +90,52 @@ def pl_performances(bs, budget, n_simu, X_train_full, y_train_full, X_test, y_te
             pl = PassiveLearning(X_train_full, y_train_full, full_id, train_id, pool_id, b)
             perfs_dict[b].append(pl.run(X_test, y_test, budget//b))
     return perfs_dict
+
+
+def lambda_analysis(b, budget, n_simu, X_train_full, y_train_full, X_test, y_test, K_FIXE = None):
+    perfs_dict = dict()
+    lam = dict()
+    lam["small"] = np.sqrt(b)/2
+    lam["normal"] = b
+    lam["big"] = b**5
+
+    for m in lam:
+        perfs_dict[m] = []
+
+        for s in range(n_simu):
+            if s%5 == 0:
+                logging.info(f"active learning, b : {b}, s : {s}, lam : {m}")
+            # refaire le sampling si pas de représentation de toutes les classes
+            full_id, train_id, pool_id = split_train_pool(y_train_full, n_init = b)
+            #while np.len(np.unique(y_train_full[train_id]))
+            al = ActiveLearning(X_train_full, y_train_full, full_id, train_id, pool_id, b, K_FIXE, lam = lam[m])
+            perfs_dict[m].append(al.run(X_test, y_test, budget//b))
+
+    return perfs_dict
+
+
+def b_descent_analysis(budget, n_simu, X_train_full, y_train_full, X_test, y_test, b, K_FIXE = None):
+    perfs = []
+    b_init = 140
+    for s in range(n_simu):
+        if s%5 == 0:
+            logging.info(f"active learning, b : {b_init}, s : {s}")
+        # refaire le sampling si pas de représentation de toutes les classes
+        full_id, train_id, pool_id = split_train_pool(y_train_full, n_init = b)
+        #while np.len(np.unique(y_train_full[train_id]))
+        al = ActiveLearning(X_train_full, y_train_full, full_id, train_id, pool_id, b_init, K_FIXE)
+        perfs.append(al.run(X_test, y_test, 7, b_descent=20))
+    return perfs
+
+def b_ascent_analysis(budget, n_simu, X_train_full, y_train_full, X_test, y_test, b, K_FIXE = None):
+    perfs = []
+    b_init = 20
+    for s in range(n_simu):
+        if s%5 == 0:
+            logging.info(f"active learning, b : {b_init}, s : {s}")
+        # refaire le sampling si pas de représentation de toutes les classes
+        full_id, train_id, pool_id = split_train_pool(y_train_full, n_init = b)
+        #while np.len(np.unique(y_train_full[train_id]))
+        al = ActiveLearning(X_train_full, y_train_full, full_id, train_id, pool_id, b_init, K_FIXE)
+        perfs.append(al.run(X_test, y_test, 7, b_descent=-20))
+    return perfs

@@ -2,16 +2,19 @@ from sklearn.linear_model import LogisticRegression
 from scipy.spatial.distance import pdist, squareform
 from sklearn.metrics import roc_auc_score, f1_score
 import numpy as np
+import logging
 
 class ActiveLearning:
-    def __init__(self, X_train_full, y_train_full, full_id, train_id, pool_id, b, K = None, h = None):
+    def __init__(self, X_train_full, y_train_full, full_id, train_id, pool_id, b, K = None, h = None, lam=None):
         self.X = X_train_full
         self.y = y_train_full
         self.full_id = full_id
         self.train_id = train_id
         self.pool_id = pool_id
-        
         self.b = b
+        self.lam = lam
+        if self.lam is None:
+            self.lam = self.b**2 # self.b**4, np.sqrt(self.b)
         self.n = len(self.full_id)
         self.nl = len(self.train_id)
         self.nu = len(self.pool_id)
@@ -64,7 +67,6 @@ class ActiveLearning:
                     (self.nl + self.b)/self.n * self.K[np.ix_(self.full_id, self.pool_id)].sum(axis = 1)
 
     def compute_psi(self):
-        self.lam = self.b**4 # self.b**2
         self.psi = 0.5 + self.h[self.pool_id] + self.lam * self._LC_vect(self.pool_id)
         return(self.psi)
 
@@ -111,11 +113,14 @@ class ActiveLearning:
         score = f1_score(y_test, self.model.predict(X_test))
         return(score)
     
-    def run(self, X_test, y_test, times = 10):
+    def run(self, X_test, y_test, times = 10, b_descent=None):
         self.perfs.append(self.performance_auc(X_test, y_test))
         self.perfs_f1.append(self.performance_f1score(X_test, y_test))
         for t in range(times):
             self.selec_id = self.ite()
             self.perfs.append(self.performance_auc(X_test, y_test))
             self.perfs_f1.append(self.performance_f1score(X_test, y_test))
+            if b_descent is not None:
+                logging.info(f"active learning, b : {self.b}")
+                self.b = self.b - b_descent
         return self.perfs

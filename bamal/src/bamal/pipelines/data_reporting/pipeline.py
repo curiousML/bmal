@@ -34,7 +34,7 @@ Delete this when you start working on your own Kedro project.
 
 from kedro.pipeline import Pipeline, node
 
-from .nodes import plot_line_line, plot_line_box, plot_multiple_line_box, plot_batch_line_line
+from .nodes import plot_b_descent_line_line, plot_line_line, plot_line_box, plot_multiple_line_box, plot_batch_line_line, plot_lambda_line_line
 
 
 def create_pipeline(**kwargs):
@@ -71,6 +71,30 @@ def create_pipeline(**kwargs):
                     ),
                 outputs=None,
                 tags=["reporting"]
+            ),
+            node(
+                func=plot_lambda_line_line,
+                inputs=dict(
+                    pl_perfs="pl_perfs",
+                    al_lam_perfs="al_lam_perfs",
+                    b="params:BATCH_SIZE",
+                    budget="params:BUDGET"
+                    ),
+                outputs=None,
+                tags=["reporting", "lambda_analysis"]
+            ),
+            node(
+                func=plot_b_descent_line_line,
+                inputs=dict(
+                    pl_perfs="pl_perfs",
+                    al_perfs="al_perfs",
+                    b_descent_perfs="b_descent_perfs",
+                    b_ascent_perfs="b_ascent_perfs",
+                    b="params:BATCH_SIZE",
+                    budget="params:BUDGET"
+                    ),
+                outputs=None,
+                tags=["reporting", "b_descent_analysis"]
             ),
             #node(
             #    func=plot_multiple_line_box,

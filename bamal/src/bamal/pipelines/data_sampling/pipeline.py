@@ -34,7 +34,7 @@ Delete this when you start working on your own Kedro project.
 
 from kedro.pipeline import Pipeline, node
 
-from .nodes import truncate_dataset, split_train_pool, compute_gaussian_kernel, al_performances, pl_performances
+from .nodes import b_ascent_analysis, b_descent_analysis, lambda_analysis, truncate_dataset, split_train_pool, compute_gaussian_kernel, al_performances, pl_performances
 
 
 def create_pipeline(**kwargs):
@@ -83,6 +83,21 @@ def create_pipeline(**kwargs):
                 tags=["sampling", "active_sampling"]
             ),
             node(
+                func=lambda_analysis,
+                inputs=dict(
+                    b="params:BATCH_SIZE",
+                    budget="params:BUDGET",
+                    n_simu="params:N_SIMULATIONS",
+                    X_train_full="X_train_trunc",
+                    y_train_full="y_train_trunc",
+                    X_test="X_test",
+                    y_test="y_test",
+                    K_FIXE="K_FIXE"
+                    ),
+                outputs="al_lam_perfs",
+                tags=["sampling", "active_lambda_sampling"]
+            ),
+            node(
                 func=pl_performances,
                 inputs=dict(
                     bs="params:BATCH_SEQ",
@@ -95,6 +110,36 @@ def create_pipeline(**kwargs):
                     ),
                 outputs="pl_perfs",
                 tags=["sampling", "passive_sampling"]
+            ),
+            node(
+                func=b_descent_analysis,
+                inputs=dict(
+                    budget="params:BUDGET",
+                    n_simu="params:N_SIMULATIONS",
+                    X_train_full="X_train_trunc",
+                    y_train_full="y_train_trunc",
+                    X_test="X_test",
+                    y_test="y_test",
+                    b="params:BATCH_SIZE",
+                    K_FIXE="K_FIXE"
+                    ),
+                outputs="b_descent_perfs",
+                tags=["sampling", "active_descent_sampling"]
+            ),
+            node(
+                func=b_ascent_analysis,
+                inputs=dict(
+                    budget="params:BUDGET",
+                    n_simu="params:N_SIMULATIONS",
+                    X_train_full="X_train_trunc",
+                    y_train_full="y_train_trunc",
+                    X_test="X_test",
+                    y_test="y_test",
+                    b="params:BATCH_SIZE",
+                    K_FIXE="K_FIXE"
+                    ),
+                outputs="b_ascent_perfs",
+                tags=["sampling", "active_descent_sampling"]
             ),
         ]
     )
