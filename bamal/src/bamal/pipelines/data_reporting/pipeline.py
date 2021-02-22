@@ -49,7 +49,7 @@ def create_pipeline(**kwargs):
                     budget="params:BUDGET",
                     n_init="params:N_INIT"
                     ),
-                outputs=None,
+                outputs="line_line",
                 tags=["reporting"]
             ),
             node(
@@ -61,7 +61,7 @@ def create_pipeline(**kwargs):
                     b_analysis="params:BATCH_ANALYSIS",
                     n_init="params:N_INIT"
                     ),
-                outputs=None,
+                outputs="line_box",
                 tags=["reporting"]
             ),
             node(
@@ -72,7 +72,7 @@ def create_pipeline(**kwargs):
                     perfs_dict="al_perfs",
                     n_init="params:N_INIT"
                     ),
-                outputs=None,
+                outputs="batch_line_line",
                 tags=["reporting"]
             ),
             node(
@@ -84,7 +84,7 @@ def create_pipeline(**kwargs):
                     budget="params:BUDGET",
                     n_init="params:N_INIT"
                     ),
-                outputs=None,
+                outputs="lambda_line_line",
                 tags=["reporting", "lambda_analysis"]
             ),
             node(
@@ -99,7 +99,7 @@ def create_pipeline(**kwargs):
                     budget="params:BUDGET",
                     n_init="params:N_INIT"
                     ),
-                outputs=None,
+                outputs="b_descent_line_line",
                 tags=["reporting", "b_descent_analysis"]
             ),
             #node(
@@ -116,3 +116,5 @@ def create_pipeline(**kwargs):
             #),
         ]
     )
+
+# see run id : 2021-02-22T17.13.42.763Z

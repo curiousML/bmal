@@ -56,14 +56,12 @@ def plot_line_line(pl_perfs, al_perfs, bs, budget, n_init):
         plt.plot(x[:n_points], perf_mean[:n_points], label = "active learning " + str(b), marker = '+')
     plt.legend()
     img = plt.gcf()
-    #MlflowArtifactDataSet(img).save(filepath= "data/08_reporting/plot_line_line.png")
-    #img.savefig('data/08_reporting/line_line.png')
     plt.close("all")
-    plot_writer = MatplotlibWriter(
-        filepath="data/08_reporting/line_line.png"
-    )
-    plot_writer.save(img)
-    return None
+    #plot_writer = MatplotlibWriter(
+    #    filepath="data/08_reporting/line_line.png"
+    #)
+    #plot_writer.save(img)
+    return img
 
 def plot_line_box(pl_perfs, al_perfs, budget, b_analysis, n_init):
     x = np.arange(n_init, budget+b_analysis, b_analysis)
@@ -86,14 +84,12 @@ def plot_line_box(pl_perfs, al_perfs, budget, b_analysis, n_init):
     g1.set(title=f"b = {b_analysis}")
     g1.legend()
     img = plt.gcf()
-    #MlflowArtifactDataSet(img).save(filepath= "data/08_reporting/plot_line_box.png")
-    #img.savefig('data/08_reporting/line_box.png')
     plt.close("all")
-    plot_writer = MatplotlibWriter(
-        filepath=f"data/08_reporting/line_box_{b_analysis}.png"
-    )
-    plot_writer.save(img)
-    return None
+    #plot_writer = MatplotlibWriter(
+    #    filepath=f"data/08_reporting/line_box_{b_analysis}.png"
+    #)
+    #plot_writer.save(img)
+    return img
 
 def plot_multiple_line_box(pl_perfs, al_perfs, bs, budget,n_init):
     plots_dict = dict()
@@ -116,14 +112,12 @@ def plot_batch_line_line(Bs, bs, perfs_dict, n_init):
     plt.ylabel("perf")
     plt.legend()
     img = plt.gcf()
-    #MlflowArtifactDataSet(img).save(filepath= "data/08_reporting/plot_line_box.png")
-    #img.savefig('data/08_reporting/line_box.png')
     plt.close("all")
-    plot_writer = MatplotlibWriter(
-        filepath=f"data/08_reporting/batch_line_line.png"
-    )
-    plot_writer.save(img)
-    return None
+    #plot_writer = MatplotlibWriter(
+    #    filepath=f"data/08_reporting/batch_line_line.png"
+    #)
+    #plot_writer.save(img)
+    return img
 
 
 def plot_lambda_line_line(pl_perfs, al_lam_perfs, b, budget,n_init):
@@ -139,14 +133,12 @@ def plot_lambda_line_line(pl_perfs, al_lam_perfs, b, budget,n_init):
     plt.title(f"b = {b}")
     plt.legend()
     img = plt.gcf()
-    #MlflowArtifactDataSet(img).save(filepath= "data/08_reporting/plot_line_line.png")
-    #img.savefig('data/08_reporting/line_line.png')
     plt.close("all")
-    plot_writer = MatplotlibWriter(
-        filepath="data/08_reporting/lambda_line_line.png"
-    )
-    plot_writer.save(img)
-    return None
+    #plot_writer = MatplotlibWriter(
+    #    filepath="data/08_reporting/lambda_line_line.png"
+    #)
+    #plot_writer.save(img)
+    return img
 
 
 def plot_b_descent_line_line(pl_perfs, al_perfs, b_descent_perfs, b_ascent_perfs, b, b_descent_size, budget, n_init):
@@ -184,17 +176,14 @@ def plot_b_descent_line_line(pl_perfs, al_perfs, b_descent_perfs, b_ascent_perfs
     perf_mean_tronq = perf_mean[:n_points]
     x_tronq = x[:n_points]
     plt.plot(x_tronq, perf_mean_tronq, label = f"active learning, b increase ({b_descent_size}:{N}:{b_descent_size})", marker = 'o')
-
     plt.legend()
     img = plt.gcf()
-    #MlflowArtifactDataSet(img).save(filepath= "data/08_reporting/plot_line_line.png")
-    #img.savefig('data/08_reporting/line_line.png')
     plt.close("all")
-    plot_writer = MatplotlibWriter(
-        filepath="data/08_reporting/b_descent_line_line.png"
-    )
-    plot_writer.save(img)
-    return None
+    #plot_writer = MatplotlibWriter(
+    #    filepath="data/08_reporting/b_descent_line_line.png"
+    #)
+    #plot_writer.save(img)
+    return img
 
 #def plot_batch_box_box():
 #

@@ -95,18 +95,43 @@ pl_perfs:
   filepath: data/02_intermediate/pl_perfs.pkl
 
 # reporting
-#line_box:
-#  type: kedro_mlflow.io.artifacts.MlflowArtifactDataSet
-#  data_set:
-#    type: matplotlib.MatplotlibWriter  # or any valid kedro DataSet
-#    filepath: data/08_reporting/line_box.png
-#    save_args:
-#      bbox_inches: 'tight'
-#
-#line_line:
-#  type: kedro_mlflow.io.artifacts.MlflowArtifactDataSet
-#  data_set:
-#    type: matplotlib.MatplotlibWriter  # or any valid kedro DataSet
-#    filepath: data/08_reporting/line_line.png
-#    save_args:
-#      bbox_inches: 'tight'
+line_box:
+  type: kedro_mlflow.io.artifacts.MlflowArtifactDataSet
+  data_set:
+    type: matplotlib.MatplotlibWriter  # or any valid kedro DataSet
+    filepath: data/08_reporting/line_box.png
+    save_args:
+      bbox_inches: 'tight'
+
+line_line:
+  type: kedro_mlflow.io.artifacts.MlflowArtifactDataSet
+  data_set:
+    type: matplotlib.MatplotlibWriter  # or any valid kedro DataSet
+    filepath: data/08_reporting/line_line.png
+    save_args:
+      bbox_inches: 'tight'
+
+batch_line_line:
+  type: kedro_mlflow.io.artifacts.MlflowArtifactDataSet
+  data_set:
+    type: matplotlib.MatplotlibWriter  # or any valid kedro DataSet
+    filepath: data/08_reporting/batch_line_line.png
+    save_args:
+      bbox_inches: 'tight'
+
+
+lambda_line_line:
+  type: kedro_mlflow.io.artifacts.MlflowArtifactDataSet
+  data_set:
+    type: matplotlib.MatplotlibWriter  # or any valid kedro DataSet
+    filepath: data/08_reporting/lambda_line_line.png
+    save_args:
+      bbox_inches: 'tight'
+
+b_descent_line_line:
+  type: kedro_mlflow.io.artifacts.MlflowArtifactDataSet
+  data_set:
+    type: matplotlib.MatplotlibWriter  # or any valid kedro DataSet
+    filepath: data/08_reporting/b_descent_line_line.png
+    save_args:
+      bbox_inches: 'tight'
