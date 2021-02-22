@@ -42,16 +42,18 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from kedro.extras.datasets.matplotlib import MatplotlibWriter
 from kedro_mlflow.io.artifacts import MlflowArtifactDataSet
+# TODO: there's an error of shifting to fix
 
-
-def plot_line_line(pl_perfs, al_perfs, bs, budget):
-    pl_x = np.arange(bs[0], budget+bs[0], bs[0])
-    pl_y = np.array(pl_perfs[bs[0]]).mean(axis = 0)[:len(pl_x)]
-    plt.plot(pl_x, pl_y, label = "passive learning", marker = 'o')
+def plot_line_line(pl_perfs, al_perfs, bs, budget, n_init):
+    pl_x = np.arange(n_init, budget+bs[0], bs[0])
+    pl_y = np.array(pl_perfs[bs[0]]).mean(axis = 0)
+    n_points = min(len(pl_x), len(pl_y))
+    plt.plot(pl_x[:n_points], pl_y[:n_points], label = "passive learning", marker = 'o')
     for b in bs:
-        x = np.arange(b, budget+b, b)
+        x = np.arange(n_init, budget+b, b)
         perf_mean = np.array(al_perfs[b]).mean(axis = 0)[:len(x)]
-        plt.plot(x, perf_mean, label = "active learning " + str(b), marker = '+')
+        n_points = min(len(x), len(perf_mean))
+        plt.plot(x[:n_points], perf_mean[:n_points], label = "active learning " + str(b), marker = '+')
     plt.legend()
     img = plt.gcf()
     #MlflowArtifactDataSet(img).save(filepath= "data/08_reporting/plot_line_line.png")
@@ -63,17 +65,21 @@ def plot_line_line(pl_perfs, al_perfs, bs, budget):
     plot_writer.save(img)
     return None
 
-def plot_line_box(pl_perfs, al_perfs, budget, b_analysis):
-    x = np.arange(0, budget+b_analysis, b_analysis)+b_analysis
+def plot_line_box(pl_perfs, al_perfs, budget, b_analysis, n_init):
+    x = np.arange(n_init, budget+b_analysis, b_analysis)
+    n_points = min(len(x), len(al_perfs[b_analysis]))
+
     perfs = pd.DataFrame({
-        i:perf for i, perf in enumerate(al_perfs[b_analysis])
-    }, index = x).transpose()
+        i:perf for i, perf in enumerate(al_perfs[b_analysis][:n_points])
+    }).transpose()
     perfs = perfs.iloc[:,:-1]
     
-    pl_x = np.arange(b_analysis, budget+b_analysis, b_analysis)
-    pl_y = np.array(pl_perfs[b_analysis]).mean(axis = 0)[:len(pl_x)]
+    pl_x = np.arange(n_init, budget+b_analysis, b_analysis)
+    pl_y = np.array(pl_perfs[b_analysis]).mean(axis = 0)
+    n_points = min(len(pl_x), len(pl_y))
+    
     g1 = sns.boxplot(data = perfs, showfliers=False, color="orange")
-    plt.plot(pl_x.astype(str), pl_y, label = "passive learning", marker = 'o')
+    plt.plot(pl_x[:n_points].astype(str), pl_y[:n_points], label = "passive learning", marker = 'o')
     g1.set(xticklabels=[])
     g1.set(ylabel="AUC")
     g1.set(xlabel=f"B (0 à {budget})")
@@ -89,7 +95,7 @@ def plot_line_box(pl_perfs, al_perfs, budget, b_analysis):
     plot_writer.save(img)
     return None
 
-def plot_multiple_line_box(pl_perfs, al_perfs, bs, budget):
+def plot_multiple_line_box(pl_perfs, al_perfs, bs, budget,n_init):
     plots_dict = dict()
     for b in bs:
         plots_dict[b] = plot_line_box(pl_perfs, al_perfs, bs, budget, b)
@@ -101,7 +107,8 @@ def plot_multiple_line_box(pl_perfs, al_perfs, bs, budget):
     plot_writer.save(plots_dict)
     return None
 
-def plot_batch_line_line(Bs, bs, perfs_dict):
+# TODO: readjust the points
+def plot_batch_line_line(Bs, bs, perfs_dict, n_init):
     for B in Bs:
         perfs = [np.array(perfs_dict[b]).mean(axis = 0)[B//b] for b in bs]
         plt.plot(np.array(bs).astype(str), perfs, marker = 'o', label = f"Budget : {B}")
@@ -119,14 +126,17 @@ def plot_batch_line_line(Bs, bs, perfs_dict):
     return None
 
 
-def plot_lambda_line_line(pl_perfs, al_lam_perfs, b, budget):
-    pl_x = np.arange(b, budget+b, b)
-    pl_y = np.array(pl_perfs[b]).mean(axis = 0)[:len(pl_x)]
-    plt.plot(pl_x, pl_y, label = "passive learning", marker = 'o')
+def plot_lambda_line_line(pl_perfs, al_lam_perfs, b, budget,n_init):
+    pl_x = np.arange(n_init, budget+b, b)
+    pl_y = np.array(pl_perfs[b]).mean(axis = 0)
+    n_points = min(len(pl_x), len(pl_y))
+    plt.plot(pl_x[:n_points], pl_y[:n_points], label = "passive learning", marker = 'o')
     for lam in al_lam_perfs:
         x = np.arange(b, budget+b, b)
-        perf_mean = np.array(al_lam_perfs[lam]).mean(axis = 0)[:len(x)]
-        plt.plot(x, perf_mean, label = "active learning, lambda " + lam, marker = '+')
+        perf_mean = np.array(al_lam_perfs[lam]).mean(axis = 0)
+        n_points = min(len(x), len(perf_mean))
+        plt.plot(x[:n_points], perf_mean[:n_points], label = "active learning, lambda " + lam, marker = '+')
+    plt.title(f"b = {b}")
     plt.legend()
     img = plt.gcf()
     #MlflowArtifactDataSet(img).save(filepath= "data/08_reporting/plot_line_line.png")
@@ -139,26 +149,42 @@ def plot_lambda_line_line(pl_perfs, al_lam_perfs, b, budget):
     return None
 
 
-def plot_b_descent_line_line(pl_perfs, al_perfs, b_descent_perfs, b_ascent_perfs, b, budget):
-    pl_x = np.arange(b, budget+b, b)
-    pl_y = np.array(pl_perfs[b]).mean(axis = 0)[:len(pl_x)]
-    plt.plot(pl_x, pl_y, label = f"passive learning, b = {b}", marker = 'o')
-    al_x = np.arange(b, budget+b, b)
-    al_y = np.array(al_perfs[b]).mean(axis = 0)[:len(al_x)]
-    plt.plot(al_x, al_y, label = f"active learning, b = {b}", marker = 'o')
+def plot_b_descent_line_line(pl_perfs, al_perfs, b_descent_perfs, b_ascent_perfs, b, b_descent_size, budget, n_init):
+    pl_x = np.arange(n_init, budget+b, b)
+    pl_y = np.array(pl_perfs[b]).mean(axis = 0)
+    n_points = min(len(pl_x), len(pl_y))
+    plt.plot(pl_x[:n_points], pl_y[:n_points], label = f"passive learning, b = {b}", marker = 'o')
+    al_x = np.arange(n_init, budget+b, b)
+    al_y = np.array(al_perfs[b]).mean(axis = 0)
+    n_points = min(len(al_x), len(al_y))
+    plt.plot(al_x[:n_points], al_y[:n_points], label = f"active learning, b = {b}", marker = 'o')
 
-    # descent analysis
-    b_descent = np.concatenate(([0], np.arange(140, 0, -20)))
-    x = np.cumsum(b_descent)+b
-    perf_mean = np.array(b_descent_perfs).mean(axis = 0)[:len(x)]
-    plt.plot(x, perf_mean, label = "active learning, b decrease (140:20:20)", marker = 'o')
+    # descent analysis (TODO: more exotic way)
+    for N in np.arange(b_descent_size, budget, b_descent_size):
+        b_descent = np.concatenate(([0], np.arange(N, 0, -b_descent_size)))
+        x_candidate = np.cumsum(b_descent)+n_init
+        if x_candidate[-1] >= budget:
+            x = x_candidate
+            break
+    perf_mean = np.array(b_descent_perfs).mean(axis = 0)
+    n_points = min(len(x), len(perf_mean))
+    perf_mean_tronq = perf_mean[:n_points]
+    x_tronq = x[:n_points]
+    plt.plot(x_tronq, perf_mean_tronq, label = f"active learning, b decrease ({N}:{x_tronq[-1] - x_tronq[-2]}:{-b_descent_size})", marker = 'o')
     
-    # ascent analysis
-    b_ascent = np.arange(0, 160, 20)
-    x = np.cumsum(b_ascent)+b
-    perf_mean = np.array(b_ascent_perfs).mean(axis = 0)[:len(x)]
-    plt.plot(x, perf_mean, label = "active learning, b increase (20:140:20)", marker = 'o')
-    
+    # ascent analysis (TODO: more exotic way)
+    for N in np.arange(b_descent_size, budget, b_descent_size):
+        b_ascent = np.arange(0, N, b_descent_size)
+        x_candidate = np.cumsum(b_ascent)+n_init
+        if x_candidate[-1] >= budget:
+            x = x_candidate
+            break
+    perf_mean = np.array(b_ascent_perfs).mean(axis = 0)
+    n_points = min(len(x), len(perf_mean))
+    perf_mean_tronq = perf_mean[:n_points]
+    x_tronq = x[:n_points]
+    plt.plot(x_tronq, perf_mean_tronq, label = f"active learning, b increase ({b_descent_size}:{N}:{b_descent_size})", marker = 'o')
+
     plt.legend()
     img = plt.gcf()
     #MlflowArtifactDataSet(img).save(filepath= "data/08_reporting/plot_line_line.png")

@@ -57,7 +57,7 @@ def create_pipeline(**kwargs):
                     size="params:SIZE_ANALYSIS"
                     ),
                 outputs=["X_train_trunc", "y_train_trunc"],
-                tags=["sampling", "truncate"]
+                tags=["pre_sampling"]
             ),
             node(
                 func=compute_gaussian_kernel,
@@ -65,7 +65,7 @@ def create_pipeline(**kwargs):
                     X="X_train_trunc"
                     ),
                 outputs="K_FIXE",
-                tags=["sampling", "pre_active_sampling"]
+                tags=["pre_sampling"]
             ),
             node(
                 func=al_performances,
@@ -77,7 +77,8 @@ def create_pipeline(**kwargs):
                     y_train_full="y_train_trunc",
                     X_test="X_test",
                     y_test="y_test",
-                    K_FIXE="K_FIXE"
+                    K_FIXE="K_FIXE",
+                    n_init="params:N_INIT"
                     ),
                 outputs="al_perfs",
                 tags=["sampling", "active_sampling"]
@@ -92,6 +93,7 @@ def create_pipeline(**kwargs):
                     y_train_full="y_train_trunc",
                     X_test="X_test",
                     y_test="y_test",
+                    n_init="params:N_INIT",
                     K_FIXE="K_FIXE"
                     ),
                 outputs="al_lam_perfs",
@@ -106,7 +108,8 @@ def create_pipeline(**kwargs):
                     X_train_full="X_train_trunc",
                     y_train_full="y_train_trunc",
                     X_test="X_test",
-                    y_test="y_test"
+                    y_test="y_test",
+                    n_init="params:N_INIT"
                     ),
                 outputs="pl_perfs",
                 tags=["sampling", "passive_sampling"]
@@ -120,7 +123,8 @@ def create_pipeline(**kwargs):
                     y_train_full="y_train_trunc",
                     X_test="X_test",
                     y_test="y_test",
-                    b="params:BATCH_SIZE",
+                    n_init="params:N_INIT",
+                    b_descent_size="params:BATCH_DESCENT_SIZE",
                     K_FIXE="K_FIXE"
                     ),
                 outputs="b_descent_perfs",
@@ -135,7 +139,8 @@ def create_pipeline(**kwargs):
                     y_train_full="y_train_trunc",
                     X_test="X_test",
                     y_test="y_test",
-                    b="params:BATCH_SIZE",
+                    n_init="params:N_INIT",
+                    b_ascent_size="params:BATCH_DESCENT_SIZE",
                     K_FIXE="K_FIXE"
                     ),
                 outputs="b_ascent_perfs",

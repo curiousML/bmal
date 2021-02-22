@@ -46,7 +46,8 @@ def create_pipeline(**kwargs):
                     pl_perfs="pl_perfs",
                     al_perfs="al_perfs",
                     bs="params:BATCH_SEQ",
-                    budget="params:BUDGET"
+                    budget="params:BUDGET",
+                    n_init="params:N_INIT"
                     ),
                 outputs=None,
                 tags=["reporting"]
@@ -57,7 +58,8 @@ def create_pipeline(**kwargs):
                     pl_perfs="pl_perfs",
                     al_perfs="al_perfs",
                     budget="params:BUDGET",
-                    b_analysis="params:BATCH_SIZE"
+                    b_analysis="params:BATCH_ANALYSIS",
+                    n_init="params:N_INIT"
                     ),
                 outputs=None,
                 tags=["reporting"]
@@ -67,7 +69,8 @@ def create_pipeline(**kwargs):
                 inputs=dict(
                     Bs="params:BUDGET_SEQ",
                     bs="params:BATCH_SEQ",
-                    perfs_dict="al_perfs"
+                    perfs_dict="al_perfs",
+                    n_init="params:N_INIT"
                     ),
                 outputs=None,
                 tags=["reporting"]
@@ -78,7 +81,8 @@ def create_pipeline(**kwargs):
                     pl_perfs="pl_perfs",
                     al_lam_perfs="al_lam_perfs",
                     b="params:BATCH_SIZE",
-                    budget="params:BUDGET"
+                    budget="params:BUDGET",
+                    n_init="params:N_INIT"
                     ),
                 outputs=None,
                 tags=["reporting", "lambda_analysis"]
@@ -91,7 +95,9 @@ def create_pipeline(**kwargs):
                     b_descent_perfs="b_descent_perfs",
                     b_ascent_perfs="b_ascent_perfs",
                     b="params:BATCH_SIZE",
-                    budget="params:BUDGET"
+                    b_descent_size="params:BATCH_DESCENT_SIZE",
+                    budget="params:BUDGET",
+                    n_init="params:N_INIT"
                     ),
                 outputs=None,
                 tags=["reporting", "b_descent_analysis"]
@@ -102,7 +108,8 @@ def create_pipeline(**kwargs):
             #        pl_perfs="pl_perfs",
             #        al_perfs="al_perfs",
             #        bs="params:BATCH_SEQ",
-            #        budget="params:BUDGET"
+            #        budget="params:BUDGET",
+            #        n_init="params:N_INIT"
             #        ),
             #    outputs=None,
             #    tags=["reporting"]
