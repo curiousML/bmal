@@ -141,41 +141,25 @@ def plot_lambda_line_line(pl_perfs, al_lam_perfs, b, budget,n_init):
     return img
 
 
-def plot_b_descent_line_line(pl_perfs, al_perfs, b_descent_perfs, b_ascent_perfs, b, b_descent_size, budget, n_init):
+def plot_b_descent_line_line(pl_perfs, al_perfs, b_descent_perfs, b_ascent_perfs, b, bs_descent, bs_ascent, budget, n_init, descent_rate = 0, ascent_rate = 0):
     pl_x = np.arange(n_init, budget+b, b)
     pl_y = np.array(pl_perfs[b]).mean(axis = 0)
     n_points = min(len(pl_x), len(pl_y))
-    plt.plot(pl_x[:n_points], pl_y[:n_points], label = f"passive learning, b = {b}", marker = 'o')
+    plt.plot(pl_x[:n_points], pl_y[:n_points], label = f"PL b = {b}", marker = 'o')
     al_x = np.arange(n_init, budget+b, b)
     al_y = np.array(al_perfs[b]).mean(axis = 0)
     n_points = min(len(al_x), len(al_y))
-    plt.plot(al_x[:n_points], al_y[:n_points], label = f"active learning, b = {b}", marker = 'o')
+    plt.plot(al_x[:n_points], al_y[:n_points], label = f"AL, b = {b}", marker = 'o')
 
-    # descent analysis (TODO: more exotic way)
-    for N in np.arange(b_descent_size, budget, b_descent_size):
-        b_descent = np.concatenate(([0], np.arange(N, 0, -b_descent_size)))
-        x_candidate = np.cumsum(b_descent)+n_init
-        if x_candidate[-1] >= budget:
-            x = x_candidate
-            break
     perf_mean = np.array(b_descent_perfs).mean(axis = 0)
-    n_points = min(len(x), len(perf_mean))
-    perf_mean_tronq = perf_mean[:n_points]
-    x_tronq = x[:n_points]
-    plt.plot(x_tronq, perf_mean_tronq, label = f"active learning, b decrease ({N}:{x_tronq[-1] - x_tronq[-2]}:{-b_descent_size})", marker = 'o')
+    x_descent = np.cumsum(bs_descent)
+    plt.plot(x_descent, perf_mean, label = f"AL, b decrease ({bs_descent[1]} to {bs_descent[-1]}, rate = {descent_rate})", marker = 'o')
     
     # ascent analysis (TODO: more exotic way)
-    for N in np.arange(b_descent_size, budget, b_descent_size):
-        b_ascent = np.arange(0, N, b_descent_size)
-        x_candidate = np.cumsum(b_ascent)+n_init
-        if x_candidate[-1] >= budget:
-            x = x_candidate
-            break
     perf_mean = np.array(b_ascent_perfs).mean(axis = 0)
-    n_points = min(len(x), len(perf_mean))
-    perf_mean_tronq = perf_mean[:n_points]
-    x_tronq = x[:n_points]
-    plt.plot(x_tronq, perf_mean_tronq, label = f"active learning, b increase ({b_descent_size}:{N}:{b_descent_size})", marker = 'o')
+    x_ascent = np.cumsum(bs_ascent)
+    plt.plot(x_ascent, perf_mean, label = f"AL, b increase ({bs_ascent[1]} to {bs_ascent[-1]}, rate = {ascent_rate})", marker = 'o')
+    
     plt.legend()
     img = plt.gcf()
     plt.close("all")

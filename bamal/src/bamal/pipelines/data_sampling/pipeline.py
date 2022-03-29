@@ -78,7 +78,8 @@ def create_pipeline(**kwargs):
                     X_test="X_test",
                     y_test="y_test",
                     K_FIXE="K_FIXE",
-                    n_init="params:N_INIT"
+                    n_init="params:N_INIT",
+                    lam = "params:LAMBDA"
                     ),
                 outputs="al_perfs",
                 tags=["sampling", "active_sampling"]
@@ -125,9 +126,10 @@ def create_pipeline(**kwargs):
                     y_test="y_test",
                     n_init="params:N_INIT",
                     b_descent_size="params:BATCH_DESCENT_SIZE",
+                    b_rate="params:BATCH_DESCENT_RATE",
                     K_FIXE="K_FIXE"
                     ),
-                outputs="b_descent_perfs",
+                outputs=["b_descent_perfs", "bs_descent"],
                 tags=["sampling", "active_descent_sampling"]
             ),
             node(
@@ -140,10 +142,11 @@ def create_pipeline(**kwargs):
                     X_test="X_test",
                     y_test="y_test",
                     n_init="params:N_INIT",
-                    b_ascent_size="params:BATCH_DESCENT_SIZE",
+                    b_ascent_size="params:BATCH_ASCENT_SIZE",
+                    b_rate="params:BATCH_ASCENT_RATE",
                     K_FIXE="K_FIXE"
                     ),
-                outputs="b_ascent_perfs",
+                outputs=["b_ascent_perfs", "bs_ascent"],
                 tags=["sampling", "active_descent_sampling"]
             ),
         ]

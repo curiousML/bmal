@@ -90,6 +90,14 @@ b_ascent_perfs:
   type: pickle.PickleDataSet
   filepath: data/02_intermediate/b_ascent_perfs.pkl
 
+bs_descent:
+  type: pickle.PickleDataSet
+  filepath: data/02_intermediate/bs_descent.pkl
+
+bs_ascent:
+  type: pickle.PickleDataSet
+  filepath: data/02_intermediate/bs_ascent.pkl
+
 pl_perfs:
   type: pickle.PickleDataSet
   filepath: data/02_intermediate/pl_perfs.pkl

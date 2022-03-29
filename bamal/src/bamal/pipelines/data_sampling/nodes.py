@@ -62,9 +62,16 @@ def compute_gaussian_kernel(X):
     K = np.exp(-pairwise_dists ** 2 / p)
     return K
 
-def al_performances(bs, budget, n_simu, X_train_full, y_train_full, X_test, y_test, K_FIXE = None, n_init = 0):
+def al_performances(bs, budget, n_simu, X_train_full, y_train_full, X_test, y_test, K_FIXE = None, n_init = 0, lam = "normal"):
     perfs_dict = dict()
+    lam_dict = dict()
+
     for b in bs:
+        
+        lam_dict["small"] = np.sqrt(b)/2
+        lam_dict["normal"] = None
+        lam_dict["big"] = b**5
+
         perfs_dict[b] = []
         for s in range(n_simu):
             if s%5 == 0:
@@ -74,9 +81,9 @@ def al_performances(bs, budget, n_simu, X_train_full, y_train_full, X_test, y_te
                 full_id, train_id, pool_id = split_train_pool(y_train_full, n_init = n_init)
             else:
                 full_id, train_id, pool_id = split_train_pool(y_train_full, n_init = b)
-            #while np.len(np.unique(y_train_full[train_id]))
-            al = ActiveLearning(X_train_full, y_train_full, full_id, train_id, pool_id, b, K_FIXE)
-            perfs_dict[b].append(al.run(X_test, y_test, (budget-n_init)//b))
+            al = ActiveLearning(X_train_full, y_train_full, full_id, train_id, pool_id, b, K_FIXE, lam=lam_dict[lam]) #lam_dict[lam]
+            perfs, batches = al.run(X_test, y_test, (budget-n_init)//b)
+            perfs_dict[b].append(perfs)
     return perfs_dict
 
 
@@ -114,13 +121,14 @@ def lambda_analysis(b, budget, n_simu, X_train_full, y_train_full, X_test, y_tes
             full_id, train_id, pool_id = split_train_pool(y_train_full, n_init = b)
             #while np.len(np.unique(y_train_full[train_id]))
             al = ActiveLearning(X_train_full, y_train_full, full_id, train_id, pool_id, b, K_FIXE, lam = lam[m])
-            perfs_dict[m].append(al.run(X_test, y_test, budget//b))
+            perfs, batches = al.run(X_test, y_test, budget//b)
+            perfs_dict[m].append(perfs)
 
     return perfs_dict
 
 # TODO: updates these functions
 # TODO: try other functions of "b"
-def b_descent_analysis(budget, n_simu, X_train_full, y_train_full, X_test, y_test, n_init, b_descent_size, K_FIXE = None):
+def b_descent_analysis(budget, n_simu, X_train_full, y_train_full, X_test, y_test, n_init, b_descent_size, b_rate = 0, K_FIXE = None):
     # descent analysis (TODO: more exotic way)
     for N in np.arange(b_descent_size, budget, b_descent_size):
         b_descent = np.concatenate(([0], np.arange(N, 0, -b_descent_size)))
@@ -129,20 +137,27 @@ def b_descent_analysis(budget, n_simu, X_train_full, y_train_full, X_test, y_tes
             x = x_candidate
             break
 
+    if b_rate > 0:
+        times = len(x)+round(b_rate*10)
+    else:
+        times = len(x)-1
+
     perfs = []
     b_init = N
-    times = len(x)-1
     for s in range(n_simu):
         if s%5 == 0:
-            logging.info(f"active learning, b : {b_descent_size}, s : {s}")
+            logging.info(f"nb simulations : {s}")
         # refaire le sampling si pas de représentation de toutes les classes
         full_id, train_id, pool_id = split_train_pool(y_train_full, n_init = n_init)
         #while np.len(np.unique(y_train_full[train_id]))
         al = ActiveLearning(X_train_full, y_train_full, full_id, train_id, pool_id, b_init, K_FIXE)
-        perfs.append(al.run(X_test, y_test, times, b_descent=b_descent_size))
-    return perfs
+        perf, bs = al.run(X_test, y_test, times, b_descent=b_descent_size, b_rate=b_rate)
+        perfs.append(perf)
+    logging.info(f"bs : {bs}")
+    logging.info(f"perfs : {perfs[0]}")
+    return perfs, bs
 
-def b_ascent_analysis(budget, n_simu, X_train_full, y_train_full, X_test, y_test, n_init, b_ascent_size, K_FIXE = None):
+def b_ascent_analysis(budget, n_simu, X_train_full, y_train_full, X_test, y_test, n_init, b_ascent_size, b_rate = 0, K_FIXE = None):
     # ascent analysis (TODO: more exotic way)
     for N in np.arange(b_ascent_size, budget, b_ascent_size):
         b_ascent = np.arange(0, N, b_ascent_size)
@@ -150,16 +165,23 @@ def b_ascent_analysis(budget, n_simu, X_train_full, y_train_full, X_test, y_test
         if x_candidate[-1] >= budget:
             x = x_candidate
             break
+    
+    if b_rate < 0:
+        times = len(x)+round(b_rate*10)
+    else:
+        times = len(x)
 
     perfs = []
     b_init = b_ascent_size
-    times = len(x)
     for s in range(n_simu):
         if s%5 == 0:
-            logging.info(f"active learning, b : {b_ascent_size}, s : {s}")
+            logging.info(f"nb simulations : {s}")
         # refaire le sampling si pas de représentation de toutes les classes
         full_id, train_id, pool_id = split_train_pool(y_train_full, n_init = n_init)
         #while np.len(np.unique(y_train_full[train_id]))
         al = ActiveLearning(X_train_full, y_train_full, full_id, train_id, pool_id, b_init, K_FIXE)
-        perfs.append(al.run(X_test, y_test, times, b_descent=-b_ascent_size))
-    return perfs
+        perf, bs = al.run(X_test, y_test, times, b_descent=-b_ascent_size, b_rate=b_rate)
+        perfs.append(perf)
+    logging.info(f"bs : {bs}")
+    logging.info(f"perfs : {perfs[0]}")
+    return perfs, bs

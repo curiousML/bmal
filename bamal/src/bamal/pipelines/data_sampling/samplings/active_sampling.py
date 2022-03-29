@@ -113,14 +113,19 @@ class ActiveLearning:
         score = f1_score(y_test, self.model.predict(X_test))
         return(score)
     
-    def run(self, X_test, y_test, times = 10, b_descent=None):
+    # TODO: to reflect
+    def run(self, X_test, y_test, times = 10, b_descent=None, b_rate = 0): # func_descent -> rate
+        self.bs = [len(self.train_id)]
         self.perfs.append(self.performance_auc(X_test, y_test))
         self.perfs_f1.append(self.performance_f1score(X_test, y_test))
+        b_new = b_descent
         for t in range(times):
+            self.bs.append(self.b)
             self.selec_id = self.ite()
             self.perfs.append(self.performance_auc(X_test, y_test))
             self.perfs_f1.append(self.performance_f1score(X_test, y_test))
             if b_descent is not None:
-                logging.info(f"active learning, b : {self.b}")
-                self.b = self.b - b_descent
-        return self.perfs
+                b_new = round( (1 + b_rate) * b_new )
+                self.b = max(self.b - b_new, 1)
+            logging.info(f"b : {self.b}")
+        return self.perfs, self.bs #TODO: change all the impact that this code can generate

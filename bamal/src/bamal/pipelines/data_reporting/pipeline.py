@@ -95,9 +95,12 @@ def create_pipeline(**kwargs):
                     b_descent_perfs="b_descent_perfs",
                     b_ascent_perfs="b_ascent_perfs",
                     b="params:BATCH_SIZE",
-                    b_descent_size="params:BATCH_DESCENT_SIZE",
+                    bs_descent="bs_descent", 
+                    bs_ascent ="bs_ascent",
                     budget="params:BUDGET",
-                    n_init="params:N_INIT"
+                    n_init="params:N_INIT",
+                    descent_rate="params:BATCH_DESCENT_RATE", 
+                    ascent_rate ="params:BATCH_ASCENT_RATE"
                     ),
                 outputs="b_descent_line_line",
                 tags=["reporting", "b_descent_analysis"]
