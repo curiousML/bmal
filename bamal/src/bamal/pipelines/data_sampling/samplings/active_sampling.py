@@ -128,4 +128,5 @@ class ActiveLearning:
                 b_new = round( (1 + b_rate) * b_new )
                 self.b = max(self.b - b_new, 1)
             logging.info(f"b : {self.b}")
-        return self.perfs, self.bs #TODO: change all the impact that this code can generate
+        #return self.perfs, self.bs #TODO: change all the impact that this code can generate
+        return self.perfs_f1, self.bs #TODO: change all the impact that this code can generate

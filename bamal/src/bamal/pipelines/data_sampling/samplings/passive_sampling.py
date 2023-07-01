@@ -53,5 +53,6 @@ class PassiveLearning:
             self.selec_id = self.ite()
             self.perfs.append(self.performance_auc(X_test, y_test))
             self.perfs_f1.append(self.performance_f1score(X_test, y_test))
-        return self.perfs
+        return self.perfs_f1
+        #return self.perfs
 
